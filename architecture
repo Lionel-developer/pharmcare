@@ -1,0 +1,17 @@
+pharmcare/
+├── backend/                 # Node + Express + MySQL
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   └── server.js
+│
+├── frontend/                # Next.js + Tailwind
+│   ├── pages/
+│   │   ├── index.jsx        # Home
+│   │   ├── login.jsx
+│   │   ├── register.jsx
+│   │   ├── dashboard.jsx
+│   │   └── products/[id].jsx
+│   ├── components/
+│   ├── context/             # Auth & Cart context
+│   └── styles/              # Tailwind + custom CSS
