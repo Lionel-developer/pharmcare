@@ -15,3 +15,11 @@ pharmcare/
 │   ├── components/
 │   ├── context/             # Auth & Cart context
 │   └── styles/              # Tailwind + custom CSS
+
+
+To Build
+GET    /api/products          → list products
+GET    /api/products/:id      → product details
+POST   /api/products          → admin only
+PUT    /api/products/:id      → admin only
+DELETE /api/products/:id      → admin only

@@ -6,7 +6,7 @@ router.get('/', (req, res) => {
     res.json({ 
         status: 'OK',
         service: 'Pharmcare backend',
-        time: new Date().toISOString() 
+        time: new Date().toTimeString()
     });
 })
 

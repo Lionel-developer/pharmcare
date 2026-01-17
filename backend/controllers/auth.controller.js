@@ -39,7 +39,7 @@ exports.login = async (req, res) => {
 
     try {
         const [rows] = await pool.query(
-            'SELECT * FROM users WHERE email = ?', [email]
+            'SELECT id, name, email, password, role FROM users WHERE email = ?', [email]
         );
 
         const user = rows[0];
@@ -51,7 +51,8 @@ exports.login = async (req, res) => {
         const token = jwt.sign({
             id: user.id,
             email: user.email,
-            name: user.name
+            name: user.name,
+            role: user.role
         }, JWT_SECRET, { expiresIn: '1h' });
 
         res.json({message: 'Login successful.', token });
