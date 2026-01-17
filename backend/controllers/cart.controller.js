@@ -144,9 +144,13 @@ exports.checkout = async (req, res) => {
     try {
         const cart = await getActiveCart(userId);
 
-        // Get all cart items with product info
         const [items] = await pool.query(
-            `SELECT ci.id AS cart_item_id, p.id AS product_id, p.name, p.price, p.requires_prescription, ci.quantity
+            `SELECT ci.id AS cart_item_id,
+                    p.id AS product_id,
+                    p.name,
+                    p.price,
+                    p.requires_prescription,
+                    ci.quantity
              FROM cart_items ci
              JOIN products p ON ci.product_id = p.id
              WHERE ci.cart_id = ?`,
@@ -157,25 +161,37 @@ exports.checkout = async (req, res) => {
             return res.status(400).json({ message: 'Cart is empty' });
         }
 
-        // Check if any items require prescription
-        const prescriptionRequired = items.some(item => item.requires_prescription);
+        const prescriptionItems = items.filter(
+            item => item.requires_prescription === 1
+        );
 
-        if (prescriptionRequired) {
-            // Optionally, you could filter only items without approved prescriptions
-            return res.status(400).json({ 
-                message: 'Prescription required for some items in the cart',
-                prescriptionRequired: true
-            });
+        for (const item of prescriptionItems) {
+            const [rows] = await pool.query(
+                `SELECT id
+                 FROM prescriptions
+                 WHERE user_id = ?
+                   AND product_id = ?
+                   AND status = 'approved'
+                 LIMIT 1`,
+                [userId, item.product_id]
+            );
+
+            if (rows.length === 0) {
+                return res.status(400).json({
+                    message: 'Approved prescription required',
+                    productId: item.product_id,
+                    productName: item.name
+                });
+            }
         }
 
-        // Calculate totals
         let total = 0;
         const itemsWithTotals = items.map(item => {
             const itemTotal = parseFloat(item.price) * item.quantity;
             total += itemTotal;
             return {
                 ...item,
-                itemTotal: itemTotal.toFixed(2) // for clarity
+                itemTotal: itemTotal.toFixed(2)
             };
         });
 

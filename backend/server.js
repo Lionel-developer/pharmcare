@@ -9,6 +9,7 @@ const protectedRoutes = require('./routes/protected.routes.js');
 const productRoutes = require('./routes/product.routes.js');
 const  prescriptionRoutes = require('./routes/prescription.routes.js');
 const cartRoutes = require('./routes/cart.routes.js');
+const orderRoutes = require('./routes/order.routes.js');
 
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/prescriptions', prescriptionRoutes);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 
 
 
